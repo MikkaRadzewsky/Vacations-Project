@@ -1,20 +1,19 @@
 
-import { UploadedFile } from "express-fileupload";
-
-
-
  class VacationModel {
     public vacationId: number;
     public destination: string;
     public description: string;
-    public startDate: Date;
-    public endDate: Date;
+    public startDate: string;
+    public endDate: string;
     public price: number;
-    public image?: UploadedFile;
+    public image?: FileList;
 
     public imageName: string;
 
-    public constructor (vacation: VacationModel) {
+    public followersCount: number;
+    public isFollowing: number;
+
+    public constructor (vacation: any) {
         this.vacationId = vacation.vacationId;
         this.destination = vacation.destination;
         this.description = vacation.description;
@@ -23,7 +22,9 @@ import { UploadedFile } from "express-fileupload";
         this.price = vacation.price;
         this.image = vacation.image;
         
-        this.imageName = vacation.imageName;
+         this.imageName = vacation.imageName;
+         this.followersCount = vacation.followersCount;
+         this.isFollowing = vacation.isFollowing;
     }
 
     
@@ -41,21 +42,18 @@ import { UploadedFile } from "express-fileupload";
 
     public static startDateValidation = {
         required: { value: true, message: "Missing a start date" }
-        // validation?
     }
 
     public static endDateValidation = {
         required: { value: true, message: "Missing a start date" },
-        // min: {value: }
     }
 
-    // required, min --> 0, max --> 1000
     public static priceValidation = {
         required: { value: true, message: "Missing price" },
         min: { value: 0, message: "Price can't be negative" },
         max: { value: 100000, message: "Price can't exceed 100,000" }
     }
-    
+
  }
 
  export default VacationModel;

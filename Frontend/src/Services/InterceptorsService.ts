@@ -7,10 +7,8 @@ class InterceptorsService {
         
         axios.interceptors.request.use(request => {
             
-            // If we have a token:
             if(authStore.getState().token) {
 
-                // Create JWT header with that token:
                 request.headers = {
                     authorization: "Bearer " + authStore.getState().token
                 };

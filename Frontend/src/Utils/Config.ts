@@ -1,10 +1,27 @@
-class Config {
-    public vacationsUrl = "http://localhost:3001/api/vacations/";
-    public vacationImagesUrl = "http://localhost:3030/api/vacations/images/";
-    public registerUrl = "http://localhost:3030/api/auth/register/";
-    public loginUrl = "http://localhost:3030/api/auth/login/";
+import { config } from "process";
+
+export class Config {
+
+public static serverUrl: string;
+
+public static _initialize() {
+    if(process.env.NODE_ENV === "production") {
+        Config.serverUrl = "http://localhost:3001/"; //3000? 3001?
+    }else {
+        Config.serverUrl = "http://galactic-vacations.herokuapp.com"
+    }
 }
 
-const appConfig = new Config(); // Singleton
+    // public vacationsUrl =  Config.serverUrl + "api/vacations/";
+    // public likedVacationsUrl = Config.serverUrl + "api/liked-vacations/";
+    // public vacationImagesUrl = Config.serverUrl + "api/vacations/images/";
+    // public registerUrl = Config.serverUrl + "api/auth/register/";
+    // public loginUrl = Config.serverUrl + "api/auth/login/";
+    // public usersUrl = Config.serverUrl + "api/users/";
+}
 
-export default appConfig;
+// const appConfig = new Config();
+
+// export default appConfig;
+
+Config._initialize();

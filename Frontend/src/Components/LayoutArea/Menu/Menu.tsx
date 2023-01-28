@@ -1,21 +1,22 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import authService from "../../../Services/AuthService";
+import notifyService from "../../../Services/NotifyService";
+import AuthMenu from "../../AuthArea/AuthMenu/AuthMenu";
 import TotalVacations from "../../VacationsArea/TotalVacations/TotalVacations";
-import TotalProducts from "../../VacationsArea/TotalVacations/TotalVacations";
 import "./Menu.css";
 
 function Menu(): JSX.Element {
-    return (
-        <div className="Menu">
-            
-            <NavLink to="/home">Home</NavLink>
-            <NavLink to="/vacations">Vacations</NavLink>
-            <NavLink to="/about">About</NavLink>
-            <NavLink to="/contact-us">Contact Us</NavLink>
 
-            <TotalVacations />
+  return (
+    <div className="Menu">
+      <AuthMenu />
+      <NavLink to="/home">Home</NavLink>
+      <NavLink to="/vacations/">Vacations</NavLink>
+      <NavLink to="/about">About</NavLink>
 
-        </div>
-    );
+      <TotalVacations />
+    </div>
+  );
 }
 
 export default Menu;

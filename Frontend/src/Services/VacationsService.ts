@@ -1,21 +1,22 @@
 import axios from "axios";
-import fs from "fs";
+import FollowerModel from "../Models/FollowerModel";
 import VacationModel from "../Models/VacationModel";
-import { authStore } from "../Redux/AuthState";
 import { VacationsActionType, vacationsStore } from "../Redux/VacationsState";
-import appConfig from "../Utils/Config";
-import { v4 as uuid } from "uuid";
+import { Config } from "../Utils/Config";
+import authService from "./AuthService";
+
 
 class VacationsService {
 
-    // Get all vacations:
-    public async getAllVacations(): Promise<VacationModel[]> {
+    // Get all vacations + likes:
+    public async getAllVacationsWithLikes(): Promise<VacationModel[]> {
 
         let vacations = vacationsStore.getState().vacations;
+        const currentUserId:number = await authService.getUserIdFromToken()
 
         if (vacations.length === 0) {
 
-            const response = await axios.get<VacationModel[]>(appConfig.vacationsUrl); // AJAX
+            const response = await axios.get<VacationModel[]>(Config.serverUrl+"/api/liked-vacations/"+currentUserId); // AJAX
             vacations = response.data;
             vacationsStore.dispatch({ type: VacationsActionType.FetchVacations, payload: vacations });
         }
@@ -23,84 +24,53 @@ class VacationsService {
         return vacations;
     }
 
-    // Get one product:
-    public async getOneVacation(id: number): Promise<VacationModel> {
+    // Get one vacation:
+    public async getOneVacation(vacationId: number): Promise<VacationModel> {
 
-        let vacations = vacationsStore.getState().vacations;
-        let vacation = vacations.find(v => v.vacationId === id);
-
-        if (!vacation) {
-
-            const response = await axios.get<VacationModel>(appConfig.vacationsUrl + id); 
-            vacation = response.data;
-        }
+            const response = await axios.get<VacationModel>(Config.serverUrl+"/api/vacations/" + vacationId); 
+            const vacation = response.data;
 
         return vacation;
     }
 
-    // REST API Methods:
-    // GET      Get data from server
-    // POST     Add new data to server
-    // PUT      Update full data in server - sending all properties
-    // PATCH    Update partial data in server - sending some properties
-    // DELETE   Delete data in server
-
     // Add vacation: 
     public async addVacation(vacation: VacationModel): Promise<void> { 
         
-    if (vacation.image) {
-        const extension = vacation.image.name.substring(vacation.image.name.lastIndexOf("."))
-        vacation.imageName = uuid() + extension;
-        await vacation.image.mv("./src/1-assets/images/" + vacation.imageName);
-        delete vacation.image;
-    }
-
         const myFormData = new FormData(); // Can contain strings and / or files.
         myFormData.append("destination", vacation.destination);
         myFormData.append("description", vacation.description);
-        myFormData.append("startDate", vacation.startDate.toLocaleDateString());
-        myFormData.append("endDate", vacation.endDate.toLocaleDateString());
+        myFormData.append("startDate", vacation.startDate);
+        myFormData.append("endDate", vacation.endDate);
         myFormData.append("price", vacation.price.toString());
+        myFormData.append("image", vacation.image[0]);
         myFormData.append("imageName", vacation.imageName);
 
-        // Sending object with file (the image):
-        const response = await axios.post<VacationModel>(appConfig.vacationsUrl, myFormData); // Sending object without files.
 
-        // Extract the added vacation: 
+        const response = await axios.post<VacationModel>(Config.serverUrl+"/api/vacations/", myFormData);
         const addedVacation = response.data;
-
-        // Add the added vacation to the global state:
         vacationsStore.dispatch({ type: VacationsActionType.AddVacation, payload: addedVacation });
     }
 
     // Update Vacation: 
     public async updateVacation(vacation: VacationModel): Promise<void> {
-
-        if (vacation.image) {
-
-            // If we have a previous image:
-            if (fs.existsSync("./src/1-assets/images/" + vacation.vacationId)) {
-    
-                // Delete it:
-                fs.unlinkSync("./src/1-assets/images/" + vacation.vacationId);
-            }
-    
-            const extension = vacation.image.name.substring(vacation.image.name.lastIndexOf("."))
-            vacation.imageName = uuid() + extension;
-            await vacation.image.mv("./src/1-assets/images/" + vacation.imageName);
-            delete vacation.image;
-        }
+        
     
             const myFormData = new FormData(); // Can contain strings and / or files.
             myFormData.append("destination", vacation.destination);
             myFormData.append("description", vacation.description);
-            myFormData.append("startDate", vacation.startDate.toLocaleDateString());
-            myFormData.append("endDate", vacation.endDate.toLocaleDateString());
+            myFormData.append("startDate", vacation.startDate);
+            myFormData.append("endDate", vacation.endDate);
             myFormData.append("price", vacation.price.toString());
-            myFormData.append("imageName", vacation.imageName);
+            if(!vacation.image)myFormData.append("imageName", vacation.imageName);
+            else{
+                myFormData.append("image", vacation.image[0]);
+                myFormData.append("imageName", vacation.imageName);
+            }
+            
+            
     
 
-        const response = await axios.put<VacationModel>(appConfig.vacationsUrl + vacation.vacationId, myFormData); // Sending object without files.
+        const response = await axios.put<VacationModel>(Config.serverUrl+"/api/vacations/" + vacation.vacationId, myFormData); // Sending object without files.
         const updatedVacation = response.data;
         vacationsStore.dispatch({ type: VacationsActionType.UpdateVacation, payload: updatedVacation });
     }
@@ -108,19 +78,31 @@ class VacationsService {
     // Delete Vacation: 
     public async deleteVacation(id: number): Promise<void> {
 
-        let vacations = vacationsStore.getState().vacations;
-        let vacation = vacations.find(v => v.vacationId === id);
-
-        if (fs.existsSync("./src/1-assets/images/" + vacation.imageName)) {
-            fs.unlinkSync("./src/1-assets/images/" + vacation.imageName);
-        }
-
-        await axios.delete<void>(appConfig.vacationsUrl + id);
+        await axios.delete<void>(Config.serverUrl+"/api/vacations/" + id);
 
         vacationsStore.dispatch({ type: VacationsActionType.DeleteVacation, payload: id });
 
     }
 
+    //Add follower:
+    public async addFollower(follower: FollowerModel): Promise<void> { 
+        
+        const response = await axios.post<FollowerModel>(Config.serverUrl+"/api/liked-vacations/", follower);
+        const addedFollower = response.data;
+        console.log(addedFollower);
+        vacationsStore.dispatch({ type: VacationsActionType.AddFollower, payload: follower.vacationId });
+    }
+
+
+    //Delete follower:
+    public async deleteFollower(follower: FollowerModel): Promise<void> {
+
+         await axios.delete<void>(Config.serverUrl+"/api/liked-vacations/" + follower.vacationId+"/"+follower.userId);
+
+        vacationsStore.dispatch({ type: VacationsActionType.DeleteFollower, payload: follower.vacationId });
+        
+
+    }
 }
 
 const vacationsService = new VacationsService();

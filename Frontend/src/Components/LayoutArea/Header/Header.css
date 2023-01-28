@@ -4,3 +4,9 @@
     flex-direction: column;
     justify-content: center;
 }
+
+.Header > img {
+    width: 80%;
+    align-items: left;
+    margin-left: 13%;
+}

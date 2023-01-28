@@ -1,7 +1,6 @@
 import mysql from "mysql";
-import appConfig from "./app-config";
+import appConfig from "./app-config-dev";
 
-// Create a pool of connection to MySQL:
 const connection = mysql.createPool({
     host: appConfig.host,
     user: appConfig.user,

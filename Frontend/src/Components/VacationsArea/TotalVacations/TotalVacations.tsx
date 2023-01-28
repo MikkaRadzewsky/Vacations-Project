@@ -9,13 +9,8 @@ function TotalVacations(): JSX.Element {
 
     useEffect(() => {
 
-        // Take current products when component first displayed:
         setCount(vacationsStore.getState().vacations.length);
-
-        // Listen to any change in the products global state:
         const unsubscribe = vacationsStore.subscribe(() => {
-
-            // Take current products when there is a change:
             setCount(vacationsStore.getState().vacations.length);
 
         });
@@ -31,7 +26,7 @@ function TotalVacations(): JSX.Element {
     if(count === 0) return null;
 
     return (
-        <div className="TotalVacations Box">
+        <div className="TotalVacations Box font-link">
             <span>Total Vacations: {count}</span>
         </div>
     );

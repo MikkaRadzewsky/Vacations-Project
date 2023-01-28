@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/static/css/main.9024b7a4.css",
+    "main.js": "/static/js/main.f4a873f8.js",
+    "static/js/787.e161f5fb.chunk.js": "/static/js/787.e161f5fb.chunk.js",
+    "static/media/yoda.png": "/static/media/yoda.6e8e7db68496c7b3bf1d.png",
+    "static/media/galaxyMap.webp": "/static/media/galaxyMap.495cbe45db407ea4da99.webp",
+    "static/media/spaceTravel.gif": "/static/media/spaceTravel.d67c261d290b9d652067.gif",
+    "static/media/milkyway.webp": "/static/media/milkyway.24e351ca30a81fe36766.webp",
+    "static/media/404.gif": "/static/media/404.6461c1c8a382adb7bd27.gif",
+    "static/media/loading.gif": "/static/media/loading.a1a996746e5e48352c81.gif",
+    "static/media/galacticVacations.png": "/static/media/galacticVacations.f806633998bb35c9735d.png",
+    "static/media/bar-graph.png": "/static/media/bar-graph.0ebcfd02274b5cf3d5ea.png",
+    "index.html": "/index.html",
+    "main.9024b7a4.css.map": "/static/css/main.9024b7a4.css.map",
+    "main.f4a873f8.js.map": "/static/js/main.f4a873f8.js.map",
+    "787.e161f5fb.chunk.js.map": "/static/js/787.e161f5fb.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9024b7a4.css",
+    "static/js/main.f4a873f8.js"
+  ]
+}

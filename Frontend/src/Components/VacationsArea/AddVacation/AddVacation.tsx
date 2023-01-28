@@ -1,25 +1,44 @@
+import { UploadedFile } from "express-fileupload";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import VacationModel from "../../../Models/VacationModel";
-import ProductModel from "../../../Models/VacationModel";
+import authService from "../../../Services/AuthService";
 import notifyService from "../../../Services/NotifyService";
 import vacationsService from "../../../Services/VacationsService";
-import useVerifyLoggedIn from "../../../Utils/useVerifyLoggedIn";
 import "./AddVacation.css";
 
 function AddVacation(): JSX.Element {
 
-    // useVerifyLoggedIn();
-
-    const { register, handleSubmit, formState } = useForm<ProductModel>();
+    const { register, handleSubmit, formState } = useForm<VacationModel>();
     const navigate = useNavigate();
+    const currentDate = new Date().toISOString().split("T")[0];
 
-    interface VacationCardProps {
-        vacation: VacationModel;
+    async function areYouAnAdmin() {
+        try {
+            const admin = await authService.isAdmin();
+            if (!admin) {
+                notifyService.error("You must be logged in as admin");
+                navigate("/vacations");
+                return;
+            }
+            }
+        catch (err: any) {
+            notifyService.error(err);
+        }
     }
+
+    useEffect(()=>{
+        areYouAnAdmin()
+    },[])
 
     async function send(vacation: VacationModel) {
         try {
+            areYouAnAdmin();
+            if (new Date(vacation.startDate) > new Date(vacation.endDate)) {
+                notifyService.error("Start date must be before the end date")
+                return;
+            }
             await vacationsService.addVacation(vacation);
             notifyService.success("Vacation has been successfully added");
             navigate("/vacations");
@@ -45,11 +64,11 @@ function AddVacation(): JSX.Element {
                 <span className="Error">{formState.errors.description?.message}</span>
 
                 <label>Start Date: </label>
-                <input type="date" {...register("startDate")} />
+                <input type="date" min={currentDate} {...register("startDate", VacationModel.startDateValidation)} />
                 <span className="Error">{formState.errors.startDate?.message}</span>
 
                 <label>End Date: </label>
-                <input type="date" {...register("endDate")} />
+                <input type="date" min={currentDate}{...register("endDate", VacationModel.endDateValidation)} />
                 <span className="Error">{formState.errors.endDate?.message}</span>
 
                 <label>Price: </label>
@@ -58,6 +77,7 @@ function AddVacation(): JSX.Element {
 
                 <label>Image: </label>
                 <input type="file" accept="image/*" {...register("image")} />
+                <span className="Error">{formState.errors.image?.message}</span>
 
                 <button>Add</button>
 

@@ -12,7 +12,7 @@ class UserModel {
 
     public constructor (user: UserModel) {
         this.userId = user.userId;
-        this.role = RoleModel.User;
+        this.role = user.role;
         this.firstName = user.firstName;
         this.lastName = user.lastName;
         this.username = user.username;
@@ -20,12 +20,12 @@ class UserModel {
     }
 
     public static validationSchema = Joi.object({
-        id: Joi.number().optional().integer().positive(),
+        userId: Joi.number().forbidden().integer().positive(),
+        role: Joi.forbidden(), // check later...
         firstName: Joi.string().required().min(2).max(20),
         lastName: Joi.string().required().min(2).max(20),
-        username: Joi.string().required().min(4).max(20),
-        password: Joi.string().required().min(4).max(20),
-        role: Joi.forbidden() // check later...
+        username: Joi.string().required().min(5).max(20),
+        password: Joi.string().required().min(5).max(20)
     });
 
     public validate(): string {

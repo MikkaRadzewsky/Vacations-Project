@@ -7,7 +7,7 @@ import "./Register.css";
 
 function Register(): JSX.Element {
 
-    const { register, handleSubmit } = useForm<UserModel>();
+    const { register, handleSubmit, formState } = useForm<UserModel>();
     const navigate = useNavigate();
 
     async function send(user: UserModel) {
@@ -29,16 +29,20 @@ function Register(): JSX.Element {
                 <h2>Register</h2>
 
                 <label>First name: </label>
-                <input type="text" {...register("firstName")} />
+                <input type="text" {...register("firstName", UserModel.firstNameValidation)} />
+                <span className="Error">{formState.errors.firstName?.message}</span>
 
                 <label>Last name: </label>
-                <input type="text" {...register("lastName")} />
+                <input type="text" {...register("lastName", UserModel.lastNameValidation)} />
+                <span className="Error">{formState.errors.lastName?.message}</span>
 
                 <label>Username: </label>
-                <input type="text" {...register("username")} />
+                <input type="text" {...register("username", UserModel.usernameValidation)} />
+                <span className="Error">{formState.errors.username?.message}</span>
 
                 <label>Password: </label>
-                <input type="password" {...register("password")} />
+                <input type="password" {...register("password", UserModel.passwordValidation)} />
+                <span className="Error">{formState.errors.password?.message}</span>
 
                 <button>Register</button>
 

@@ -1,11 +1,11 @@
-import { Notyf } from "notyf"; // npm i notyf
+import { Notyf } from "notyf"; 
 
 class NotifyService {
 
     private notify = new Notyf({
-        duration: 3000, // display duration
-        position: { x: "center", y: "top" }, // message location
-        dismissible: true // can user click on X
+        duration: 3000, 
+        position: { x: "center", y: "top" }, 
+        dismissible: true 
     });
 
     public success(message: string): void {

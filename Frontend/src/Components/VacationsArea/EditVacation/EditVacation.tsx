@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import VacationModel from "../../../Models/VacationModel";
+import { VacationsActionType, vacationsStore } from "../../../Redux/VacationsState";
+import authService from "../../../Services/AuthService";
 import notifyService from "../../../Services/NotifyService";
 import vacationsService from "../../../Services/VacationsService";
 import "./EditVacation.css";
@@ -11,25 +13,47 @@ function EditVacation(): JSX.Element {
     const { register, handleSubmit, formState, setValue } = useForm<VacationModel>();
     const navigate = useNavigate();
     const params = useParams();
+    const currentDate = new Date().toISOString().split("T")[0];
+
+    
 
     useEffect(() => {
+
+        if (!authService.isAdmin()) {
+            notifyService.error("You must be logged in as admin");
+            navigate("/vacations");
+            return;
+        }
+
         const id = +params.vacationId; 
         vacationsService.getOneVacation(id)
             .then(vacation => {
+                console.log(vacation);
+                
                 setValue("vacationId", vacation.vacationId);
                 setValue("destination", vacation.destination);
                 setValue("description", vacation.description);
-                setValue("startDate", vacation.startDate);
-                setValue("endDate", vacation.endDate);
+                setValue("startDate", new Date(vacation.startDate).toISOString().split('T')[0]);
+                setValue("endDate", new Date(vacation.endDate).toISOString().split('T')[0]);
                 setValue("price", vacation.price);
-                setValue("image", vacation.image);
             })
             .catch(err => notifyService.error(err));
+            
     }, []);
 
     async function send(vacation: VacationModel) {
         try {
+            if (new Date(vacation.startDate) > new Date(vacation.endDate)) {
+                notifyService.error("Start date must be before the end date")
+                return;
+            }
+            if(vacation.image.length<1) {
+                const currentVacation = await vacationsService.getOneVacation(vacation.vacationId);
+                console.log(currentVacation, "works");
+                vacation.imageName = currentVacation.imageName;
+            }
             await vacationsService.updateVacation(vacation);
+            vacationsStore.dispatch({ type: VacationsActionType.EmptyStore, payload: [] });
             notifyService.success("Vacation has been successfully updated");
             navigate("/vacations");
         }
@@ -56,11 +80,11 @@ function EditVacation(): JSX.Element {
                 <span className="Error">{formState.errors.description?.message}</span>
 
                 <label>Start Date: </label>
-                <input type="date" {...register("startDate")} />
+                <input type="date" min={currentDate} {...register("startDate", VacationModel.startDateValidation)} />
                 <span className="Error">{formState.errors.startDate?.message}</span>
 
                 <label>End Date: </label>
-                <input type="date" {...register("endDate")} />
+                <input type="date" min={currentDate} {...register("endDate", VacationModel.endDateValidation)} />
                 <span className="Error">{formState.errors.endDate?.message}</span>
 
                 <label>Price: </label>

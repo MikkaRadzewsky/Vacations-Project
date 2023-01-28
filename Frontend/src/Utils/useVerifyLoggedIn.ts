@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { authStore } from "../Redux/AuthState";
 import notifyService from "../Services/NotifyService";
 
-// Custom Hook
 
 function useVerifyLoggedIn() {
 
@@ -11,7 +10,6 @@ function useVerifyLoggedIn() {
 
     useEffect(() => {
 
-        // If we don't heave a token:
         if(!authStore.getState().token) {
             notifyService.error("You are not logged in!");
             navigate("/login");
