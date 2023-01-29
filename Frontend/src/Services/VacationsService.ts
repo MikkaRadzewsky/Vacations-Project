@@ -2,7 +2,7 @@ import axios from "axios";
 import FollowerModel from "../Models/FollowerModel";
 import VacationModel from "../Models/VacationModel";
 import { VacationsActionType, vacationsStore } from "../Redux/VacationsState";
-import { Config } from "../Utils/Config";
+import appConfig from "../Utils/Config";
 import authService from "./AuthService";
 
 
@@ -16,7 +16,7 @@ class VacationsService {
 
         if (vacations.length === 0) {
 
-            const response = await axios.get<VacationModel[]>(Config.serverUrl+"/api/liked-vacations/"+currentUserId); // AJAX
+            const response = await axios.get<VacationModel[]>(appConfig.likedVacationsUrl + currentUserId); // AJAX
             vacations = response.data;
             vacationsStore.dispatch({ type: VacationsActionType.FetchVacations, payload: vacations });
         }
@@ -27,7 +27,7 @@ class VacationsService {
     // Get one vacation:
     public async getOneVacation(vacationId: number): Promise<VacationModel> {
 
-            const response = await axios.get<VacationModel>(Config.serverUrl+"/api/vacations/" + vacationId); 
+            const response = await axios.get<VacationModel>(appConfig.vacationsUrl + vacationId); 
             const vacation = response.data;
 
         return vacation;
@@ -46,7 +46,7 @@ class VacationsService {
         myFormData.append("imageName", vacation.imageName);
 
 
-        const response = await axios.post<VacationModel>(Config.serverUrl+"/api/vacations/", myFormData);
+        const response = await axios.post<VacationModel>(appConfig.vacationsUrl, myFormData);
         const addedVacation = response.data;
         vacationsStore.dispatch({ type: VacationsActionType.AddVacation, payload: addedVacation });
     }
@@ -70,7 +70,7 @@ class VacationsService {
             
     
 
-        const response = await axios.put<VacationModel>(Config.serverUrl+"/api/vacations/" + vacation.vacationId, myFormData); // Sending object without files.
+        const response = await axios.put<VacationModel>(appConfig.vacationsUrl + vacation.vacationId, myFormData); // Sending object without files.
         const updatedVacation = response.data;
         vacationsStore.dispatch({ type: VacationsActionType.UpdateVacation, payload: updatedVacation });
     }
@@ -78,7 +78,7 @@ class VacationsService {
     // Delete Vacation: 
     public async deleteVacation(id: number): Promise<void> {
 
-        await axios.delete<void>(Config.serverUrl+"/api/vacations/" + id);
+        await axios.delete<void>(appConfig.vacationsUrl + id);
 
         vacationsStore.dispatch({ type: VacationsActionType.DeleteVacation, payload: id });
 
@@ -87,9 +87,8 @@ class VacationsService {
     //Add follower:
     public async addFollower(follower: FollowerModel): Promise<void> { 
         
-        const response = await axios.post<FollowerModel>(Config.serverUrl+"/api/liked-vacations/", follower);
+        const response = await axios.post<FollowerModel>(appConfig.likedVacationsUrl, follower);
         const addedFollower = response.data;
-        console.log(addedFollower);
         vacationsStore.dispatch({ type: VacationsActionType.AddFollower, payload: follower.vacationId });
     }
 
@@ -97,7 +96,7 @@ class VacationsService {
     //Delete follower:
     public async deleteFollower(follower: FollowerModel): Promise<void> {
 
-         await axios.delete<void>(Config.serverUrl+"/api/liked-vacations/" + follower.vacationId+"/"+follower.userId);
+         await axios.delete<void>(appConfig.likedVacationsUrl + follower.vacationId+"/"+follower.userId);
 
         vacationsStore.dispatch({ type: VacationsActionType.DeleteFollower, payload: follower.vacationId });
         

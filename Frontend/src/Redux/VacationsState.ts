@@ -56,7 +56,6 @@ export function vacationsReducer(currentState = new VacationsState(), action: Va
             const addFollowerIndex = newState.vacations.findIndex(v => v.vacationId === action.payload);
             newState.vacations[addFollowerIndex].followersCount++;
             newState.vacations[addFollowerIndex].isFollowing=1;
-            console.log(newState.vacations[addFollowerIndex]);
             
             break;
 
@@ -64,7 +63,6 @@ export function vacationsReducer(currentState = new VacationsState(), action: Va
             const deleteFollowerIndex = newState.vacations.findIndex(v => v.vacationId === action.payload);
             newState.vacations[deleteFollowerIndex].followersCount--;
             newState.vacations[deleteFollowerIndex].isFollowing=0;
-            console.log(newState.vacations[deleteFollowerIndex]);
             break;
 
     }

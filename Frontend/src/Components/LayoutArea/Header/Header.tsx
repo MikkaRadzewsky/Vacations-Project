@@ -4,7 +4,7 @@ import header from "../../../Assets/Images/galacticVacations.png"
 function Header(): JSX.Element {
     return (
         <div className="Header">
-            <img src={header}/>
+            <img crossOrigin="anonymous" src={header}/>
         </div>
     );
 }

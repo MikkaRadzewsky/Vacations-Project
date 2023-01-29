@@ -6,7 +6,7 @@ import { VacationsActionType, vacationsStore } from "../../../Redux/VacationsSta
 import authService from "../../../Services/AuthService";
 import notifyService from "../../../Services/NotifyService";
 import vacationsService from "../../../Services/VacationsService";
-import {Config} from "../../../Utils/Config";
+import appConfig from "../../../Utils/Config";
 import "./VacationDetails.css";
 
 
@@ -56,7 +56,7 @@ function VacationDetails(): JSX.Element {
                     <h3>Price: {vacation.price}$ </h3>
                 </div>
                 
-                    <img src={Config.serverUrl+"/api/images/" + vacation.imageName} />
+                    <img crossOrigin="anonymous" src={appConfig.vacationImagesUrl + vacation.imageName} />
                     
                 </>
             }

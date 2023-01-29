@@ -12,7 +12,6 @@ async function register(user: UserModel): Promise<string> {
     if (error) throw new ValidationErrorModel(error);
     if (await isUsernameTaken(user.username)) throw new ValidationErrorModel(`Username ${user.username} already taken`);
 
-    // Hash password:
     user.password = cyber.hash(user.password);
     user.role = RoleModel.User;
     const sql = `INSERT INTO users VALUES(DEFAULT, ?, ?, ?, ?, ?)`;
@@ -28,10 +27,8 @@ async function login(credentials: CredentialsModel): Promise<string> {
     const error = credentials.validate();
     if (error) throw new ValidationErrorModel(error);
 
-    // Hash password:
     credentials.password = cyber.hash(credentials.password);
 
-    // SQL Injection blocked - Prepared Statement:
     const sql = `SELECT * FROM users WHERE username = ? AND password = ?`;
 
     const users = await dal.execute(sql, [credentials.username, credentials.password]);

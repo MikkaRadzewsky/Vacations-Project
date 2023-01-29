@@ -97,7 +97,6 @@ async function updateVacation(vacation: VacationModel): Promise<VacationModel> {
 
     const error = vacation.validate();
     if(error) throw new ValidationErrorModel(error);
-    console.log(vacation.image);
     
     if (vacation.image) {
 
@@ -153,6 +152,7 @@ async function deleteVacation(vacationId: number): Promise<void> {
     if(info.affectedRows === 0) throw new ResourceNotFoundErrorModel(vacationId);
 }
 
+//Get All Followers:
 async function getAllFollowers(): Promise<FollowerModel[]> {
     const sql = ` SELECT *
                     FROM followers`;

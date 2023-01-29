@@ -6,7 +6,7 @@ import VacationModel from "../../../Models/VacationModel";
 import authService from "../../../Services/AuthService";
 import notifyService from "../../../Services/NotifyService";
 import vacationsService from "../../../Services/VacationsService";
-import { Config } from "../../../Utils/Config";
+import appConfig from "../../../Utils/Config";
 import "./VacationCard.css";
 
 interface VacationCardProps {
@@ -73,7 +73,7 @@ function VacationCard(props: VacationCardProps): JSX.Element {
       </div>
       <div>
         <NavLink to={"/vacations/details/" + props.vacation.vacationId}>
-          <img src={Config.serverUrl+"/api/images/" + props.vacation.imageName} />
+          <img crossOrigin="anonymous" src={appConfig.vacationImagesUrl + props.vacation.imageName} />
         </NavLink>
       </div>
     </div>

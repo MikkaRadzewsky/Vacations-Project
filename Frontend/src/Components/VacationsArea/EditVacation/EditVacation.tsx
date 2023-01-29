@@ -28,7 +28,6 @@ function EditVacation(): JSX.Element {
         const id = +params.vacationId; 
         vacationsService.getOneVacation(id)
             .then(vacation => {
-                console.log(vacation);
                 
                 setValue("vacationId", vacation.vacationId);
                 setValue("destination", vacation.destination);
@@ -49,7 +48,6 @@ function EditVacation(): JSX.Element {
             }
             if(vacation.image.length<1) {
                 const currentVacation = await vacationsService.getOneVacation(vacation.vacationId);
-                console.log(currentVacation, "works");
                 vacation.imageName = currentVacation.imageName;
             }
             await vacationsService.updateVacation(vacation);

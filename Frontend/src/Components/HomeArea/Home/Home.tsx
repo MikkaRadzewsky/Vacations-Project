@@ -10,7 +10,7 @@ function Home(): JSX.Element {
             <span className="font-link Box"> Travel the galaxy with us!</span>
 
           <div className="imgContainer">
-                <img src={galaxy}/>
+                <img crossOrigin="anonymous" src={galaxy}/>
           </div>
 
         </div>

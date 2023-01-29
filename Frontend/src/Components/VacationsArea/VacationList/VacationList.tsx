@@ -56,7 +56,6 @@ const VacationList: React.FC<IProps> = (props: IProps) => {
 
             const unsubscribe = vacationsStore.subscribe(() => {
                 setVacations(vacationsStore.getState().vacations);
-                console.log(vacations);
                 
             });
             
@@ -102,14 +101,14 @@ const VacationList: React.FC<IProps> = (props: IProps) => {
             {state.data.length === 0 && !checked && <Spinner />}
             {state.data.length === 0 && checked && <>
             <div className="noFollows">
-            <img src={yoda}></img>
+            <img crossOrigin="anonymous" src={yoda}></img>
                 <span className="Yoda">Follow vacations, you do not Mmmmm?</span>
             </div>
             </>}
             
             {role && <>
                 <NavLink className={"Add"} to="/vacations/new">+</NavLink>
-                <NavLink to="/Graph"><img src={GraphSymbol} /></NavLink>
+                <NavLink to="/Graph"><img crossOrigin="anonymous" src={GraphSymbol} /></NavLink>
             </>
 
             

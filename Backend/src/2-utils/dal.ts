@@ -1,5 +1,5 @@
 import mysql from "mysql";
-import appConfig from "./app-config-dev";
+import appConfig from "./app-config"
 
 const connection = mysql.createPool({
     host: appConfig.host,

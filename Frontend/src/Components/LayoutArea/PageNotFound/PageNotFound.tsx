@@ -5,7 +5,7 @@ function PageNotFound(): JSX.Element {
     return (
         <div className="PageNotFound">
             
-            <img src={pageNotFound}/>
+            <img crossOrigin="anonymous" src={pageNotFound}/>
 
         </div>
     );
